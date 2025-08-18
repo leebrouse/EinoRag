@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	_ "github.com/leebrouse/eino/internal/config"
-	"github.com/leebrouse/eino/internal/embadding"
+	"github.com/leebrouse/eino/internal/embadding/gemini"
 	"github.com/spf13/viper"
 	"google.golang.org/genai"
 )
@@ -21,7 +21,7 @@ func TestGeminiEmbedder_Real(t *testing.T) {
 
 	log.Println("Gemini api_key:", viper.GetString("gemini.embedder"))
 
-	embedder, err := embadding.NewGeminiEmbedder(client, viper.GetString("gemini.embedder"))
+	embedder, err := gemini.NewEmbedder(client, viper.GetString("gemini.embedder"))
 	if err != nil {
 		t.Fatalf("failed to create embedder: %v", err)
 	}
