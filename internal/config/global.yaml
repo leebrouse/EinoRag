@@ -1,0 +1,13 @@
+gemini:
+  apikey: "${GOOGLE_KEY}"
+  model: "gemini-2.0-pro"
+  embedder: "gemini-embedding-001"
+
+milvus:
+  host: "localhost"
+  port: 19530
+  collection: "rag_docs"
+
+rag:
+  chunk_size: 500
+  top_k: 5
