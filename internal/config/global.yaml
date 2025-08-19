@@ -6,7 +6,7 @@ rag:
     min_chunk_length: 100
 
   retriever:
-    top_k: 5
+    topk: 5
 
 # gemini global config
 gemini:

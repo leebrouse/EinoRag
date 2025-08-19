@@ -35,9 +35,11 @@ func main() {
 	}
 
 	indexer, err := milvus.NewIndexer(ctx, &milvus.IndexerConfig{
-		Client:     cli,
-		Embedding:  emb,
-		Collection: "rag_docs",
+		Client:            cli,
+		Embedding:         emb,
+		Collection:        "rag_docs",
+		MetricType:        "COSINE",
+		DocumentConverter: floatDocumentConverter,
 		Fields: []*entity.Field{
 			{
 				Name:       "id",
@@ -57,7 +59,7 @@ func main() {
 			},
 			{
 				Name:       "vector",
-				DataType:   entity.FieldTypeBinaryVector,
+				DataType:   entity.FieldTypeFloatVector,
 				TypeParams: map[string]string{"dim": "3072"},
 			},
 		},
@@ -78,9 +80,8 @@ func main() {
 			},
 		},
 		{
-			ID:       "milvus-2",
-			Content:  "milvus is a distributed vector database",
-			MetaData: map[string]any{}, // 保持 map 类型即可
+			ID:      "milvus-2",
+			Content: "milvus is a distributed vector database",
 		},
 	}
 
@@ -89,4 +90,23 @@ func main() {
 		log.Fatalf("Failed to store: %v", err)
 	}
 	log.Printf("Store success, ids: %v", ids)
+}
+
+func floatDocumentConverter(ctx context.Context, docs []*schema.Document, vectors [][]float64) ([]interface{}, error) {
+	rows := make([]interface{}, 0, len(docs))
+	for i, doc := range docs {
+		// float64 -> float32
+		float32Vec := make([]float32, len(vectors[i]))
+		for j, v := range vectors[i] {
+			float32Vec[j] = float32(v)
+		}
+		row := map[string]interface{}{
+			"id":       doc.ID,
+			"content":  doc.Content,
+			"vector":   float32Vec,
+			"metadata": doc.MetaData,
+		}
+		rows = append(rows, row)
+	}
+	return rows, nil
 }
