@@ -1,3 +1,13 @@
+rag:
+  transformer:
+    chunk_size: 500
+    overlap: 50
+    min_chunk_length: 100
+
+  retriever:
+    top_k: 5
+
+# gemini global config
 gemini:
   apikey: "${GOOGLE_KEY}"
   model: "gemini-2.0-pro"
@@ -8,6 +18,4 @@ milvus:
   port: 19530
   collection: "rag_docs"
 
-rag:
-  chunk_size: 500
-  top_k: 5
+

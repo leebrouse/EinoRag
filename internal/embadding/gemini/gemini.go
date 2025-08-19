@@ -11,16 +11,16 @@ import (
 
 // GeminiEmbedder 实现 Embedder 接口
 type GeminiEmbedder struct {
-	Client   *genai.Client
-	Embedder string
+	client   *genai.Client
+	embedder string
 }
 
 // NewGeminiEmbedder 初始化 Gemini Embedder
 func NewEmbedder(client *genai.Client, Embedder string) (embedding.Embedder, error) {
 
 	return &GeminiEmbedder{
-		Client:   client,
-		Embedder: Embedder,
+		client:   client,
+		embedder: Embedder,
 	}, nil
 }
 
@@ -31,8 +31,8 @@ func (e *GeminiEmbedder) EmbedStrings(ctx context.Context, texts []string, opts 
 		contents = append(contents, genai.NewContentFromText(text, genai.RoleUser))
 	}
 
-	result, err := e.Client.Models.EmbedContent(ctx,
-		e.Embedder,
+	result, err := e.client.Models.EmbedContent(ctx,
+		e.embedder,
 		contents,
 		nil,
 	)
@@ -41,6 +41,13 @@ func (e *GeminiEmbedder) EmbedStrings(ctx context.Context, texts []string, opts 
 	}
 
 	// 转换成 [][]float64
+	embeddings := e.doEmbed(result)
+
+	return embeddings, nil
+}
+
+// change to [][]float64
+func (e *GeminiEmbedder) doEmbed(result *genai.EmbedContentResponse) [][]float64 {
 	embeddings := make([][]float64, len(result.Embeddings))
 	for i, emb := range result.Embeddings {
 		vec := make([]float64, len(emb.Values))
@@ -50,5 +57,5 @@ func (e *GeminiEmbedder) EmbedStrings(ctx context.Context, texts []string, opts 
 		embeddings[i] = vec
 	}
 
-	return embeddings, nil
+	return embeddings
 }

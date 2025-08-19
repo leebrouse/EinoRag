@@ -4,25 +4,25 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/milvus-io/milvus-sdk-go/v2/client"
+	milvus"github.com/milvus-io/milvus-sdk-go/v2/client"
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 )
 
 type Milvus struct {
-	Client client.Client
+	Client milvus.Client
 }
 
 // connect
 // NewMilvus 连接到 Milvus，支持可选用户名密码（留空则不启用鉴权）
 func NewMilvus(ctx context.Context, address string, username string, password string) (*Milvus, error) {
-	cfg := client.Config{
+	cfg := milvus.Config{
 		Address: address,
 	}
 	if username != "" {
 		cfg.Username = username
 		cfg.Password = password
 	}
-	c, err := client.NewClient(ctx, cfg)
+	c, err := milvus.NewClient(ctx, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("create milvus client failed: %w", err)
 	}
@@ -117,7 +117,7 @@ func (m *Milvus) InsertVectors(ctx context.Context, collName string, dim int, ve
 
 // research
 // SearchTopK 对给定向量执行 TopK 搜索，返回原始搜索结果
-func (m *Milvus) SearchTopK(ctx context.Context, collName string, queryVectors [][]float32, vectorField string, metric entity.MetricType, topK int) ([]client.SearchResult, error) {
+func (m *Milvus) SearchTopK(ctx context.Context, collName string, queryVectors [][]float32, vectorField string, metric entity.MetricType, topK int) ([]milvus.SearchResult, error) {
 	if m == nil || m.Client == nil {
 		return nil, fmt.Errorf("milvus client is nil")
 	}
