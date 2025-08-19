@@ -40,6 +40,8 @@ github.com/cloudwego/eino-ext/components/embedding/ark v0.1.0 h1:AuJsMdaTXc+dGUD
 github.com/cloudwego/eino-ext/components/embedding/ark v0.1.0/go.mod h1:0FZG/KRBl3hGWkNsm55UaXyVa6PDVIy5u+QvboAB+cY=
 github.com/cloudwego/eino-ext/components/indexer/milvus v0.0.0-20250818061135-8213e7d8b750 h1:2MD7yGMVkqF84Ndjc6ZVXkfILMTPF4Xevm6ZNv+Vofo=
 github.com/cloudwego/eino-ext/components/indexer/milvus v0.0.0-20250818061135-8213e7d8b750/go.mod h1:Hdm2ql0T4+QcZoOVmgH9xovEJaTiQowKq3bc+lAXr50=
+github.com/cloudwego/eino-ext/components/retriever/milvus v0.0.0-20250818090953-a59b1be0df04 h1:E1IXw93zn5DAy3aHzZK9xE9MFfdVxPdmuDcYn6JfXz4=
+github.com/cloudwego/eino-ext/components/retriever/milvus v0.0.0-20250818090953-a59b1be0df04/go.mod h1:PYh8yoOcuFYVfSZZ4vglaeRgaXrMz5D4uKioDZxEDA0=
 github.com/cloudwego/iasm v0.2.0/go.mod h1:8rXZaNYT2n95jn+zTI1sDr+IgcD2GVs0nlbbQPiEFhY=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=

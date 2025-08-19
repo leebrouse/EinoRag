@@ -6,6 +6,7 @@ import (
 
 	"github.com/cloudwego/eino/components/embedding"
 	_ "github.com/leebrouse/eino/internal/config"
+	"github.com/spf13/viper"
 	"google.golang.org/genai"
 )
 
@@ -16,11 +17,22 @@ type GeminiEmbedder struct {
 }
 
 // NewGeminiEmbedder 初始化 Gemini Embedder
-func NewEmbedder(client *genai.Client, Embedder string) (embedding.Embedder, error) {
+func NewEmbedder() (embedding.Embedder, error) {
+
+	ctx := context.Background()
+	client, err := genai.NewClient(ctx, nil) // 会自动读取环境变量 API KEY
+	if err != nil {
+		return nil, fmt.Errorf("failed to create client: %w", err)
+	}
+
+	embedder := viper.GetString("gemini.embedder")
+	if embedder == "" {
+		return nil, fmt.Errorf("gemini embedder not configured")
+	}
 
 	return &GeminiEmbedder{
 		client:   client,
-		embedder: Embedder,
+		embedder: embedder,
 	}, nil
 }
 
@@ -46,10 +58,19 @@ func (e *GeminiEmbedder) EmbedStrings(ctx context.Context, texts []string, opts 
 	return embeddings, nil
 }
 
-// change to [][]float64
+// doEmbed 将 genai.EmbedContentResponse 转换为 [][]float64 格式
 func (e *GeminiEmbedder) doEmbed(result *genai.EmbedContentResponse) [][]float64 {
+	if result == nil || len(result.Embeddings) == 0 {
+		return [][]float64{}
+	}
+
 	embeddings := make([][]float64, len(result.Embeddings))
 	for i, emb := range result.Embeddings {
+		if emb == nil || len(emb.Values) == 0 {
+			embeddings[i] = []float64{}
+			continue
+		}
+
 		vec := make([]float64, len(emb.Values))
 		for j, v := range emb.Values {
 			vec[j] = float64(v)

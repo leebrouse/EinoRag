@@ -3,23 +3,21 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
-	"github.com/cloudwego/eino-ext/components/embedding/ark"
 	"github.com/cloudwego/eino-ext/components/indexer/milvus"
 	"github.com/cloudwego/eino/schema"
+	_ "github.com/leebrouse/eino/internal/config"
+	"github.com/leebrouse/eino/internal/embadding/gemini"
 	"github.com/milvus-io/milvus-sdk-go/v2/client"
+	"github.com/milvus-io/milvus-sdk-go/v2/entity"
+	"github.com/spf13/viper"
 )
 
 func main() {
-	// Get the environment variables
-	addr := "http://127.0.0.1:9000"
+	addr := viper.GetString("milvus.addr")
 	username := "minioadmin"
 	password := "minioadmin"
-	arkApiKey := os.Getenv("ARK_API_KEY")
-	arkModel := os.Getenv("ARK_MODEL")
 
-	// Create a client
 	ctx := context.Background()
 	cli, err := client.NewClient(ctx, client.Config{
 		Address:  addr,
@@ -28,32 +26,47 @@ func main() {
 	})
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
-		return
 	}
 	defer cli.Close()
 
-	// Create an embedding model
-	emb, err := ark.NewEmbedder(ctx, &ark.EmbeddingConfig{
-		APIKey: arkApiKey,
-		Model:  arkModel,
-	})
+	emb, err := gemini.NewEmbedder()
 	if err != nil {
-		log.Fatalf("Failed to create embedding: %v", err)
-		return
+		log.Fatalf("Failed to create embedder: %v", err)
 	}
 
-	// Create an indexer
 	indexer, err := milvus.NewIndexer(ctx, &milvus.IndexerConfig{
-		Client:    cli,
-		Embedding: emb,
+		Client:     cli,
+		Embedding:  emb,
+		Collection: "rag_docs",
+		Fields: []*entity.Field{
+			{
+				Name:       "id",
+				DataType:   entity.FieldTypeVarChar,
+				PrimaryKey: true,
+				AutoID:     false,
+				TypeParams: map[string]string{"max_length": "128"},
+			},
+			{
+				Name:       "content",
+				DataType:   entity.FieldTypeVarChar,
+				TypeParams: map[string]string{"max_length": "4096"},
+			},
+			{
+				Name:     "metadata",
+				DataType: entity.FieldTypeJSON,
+			},
+			{
+				Name:       "vector",
+				DataType:   entity.FieldTypeBinaryVector,
+				TypeParams: map[string]string{"dim": "3072"},
+			},
+		},
 	})
 	if err != nil {
 		log.Fatalf("Failed to create indexer: %v", err)
-		return
 	}
 	log.Printf("Indexer created success")
 
-	// Store documents
 	docs := []*schema.Document{
 		{
 			ID:      "milvus-1",
@@ -65,14 +78,15 @@ func main() {
 			},
 		},
 		{
-			ID:      "milvus-2",
-			Content: "milvus is a distributed vector database",
+			ID:       "milvus-2",
+			Content:  "milvus is a distributed vector database",
+			MetaData: map[string]any{}, // 保持 map 类型即可
 		},
 	}
+
 	ids, err := indexer.Store(ctx, docs)
 	if err != nil {
 		log.Fatalf("Failed to store: %v", err)
-		return
 	}
 	log.Printf("Store success, ids: %v", ids)
 }

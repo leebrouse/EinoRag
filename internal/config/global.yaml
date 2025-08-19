@@ -1,3 +1,4 @@
+# RAG system compentent config
 rag:
   transformer:
     chunk_size: 500
@@ -12,10 +13,13 @@ gemini:
   apikey: "${GOOGLE_KEY}"
   model: "gemini-2.0-pro"
   embedder: "gemini-embedding-001"
+  dim: 3072
 
+# milvus global config
 milvus:
-  host: "localhost"
-  port: 19530
+  addr: "localhost:19530"
+  username: "minioadmin"
+  password: "minioadmin"
   collection: "rag_docs"
 
 
