@@ -14,7 +14,7 @@ rag:
 # gemini global config
 gemini:
   apikey: "${GOOGLE_KEY}"
-  model: "gemini-2.0-pro"
+  model: "gemini-2.0-Flash"
   embedder: "gemini-embedding-001"
   dim: 3072
 

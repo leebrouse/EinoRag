@@ -8,7 +8,7 @@ import (
 	"github.com/cloudwego/eino/components/retriever"
 	"github.com/cloudwego/eino/schema"
 	_ "github.com/leebrouse/eino/internal/config"
-	"github.com/milvus-io/milvus-sdk-go/v2/client"
+	milvusClient"github.com/milvus-io/milvus-sdk-go/v2/client"
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 	"github.com/spf13/viper"
 
@@ -16,7 +16,7 @@ import (
 )
 
 type Retriever struct {
-	cli        client.Client      // milvus 原生 client
+	cli        milvusClient.Client // milvus 原生 client
 	embedder   embedding.Embedder // gemini
 	collection string             // 对应 index
 	topK       int
@@ -26,7 +26,7 @@ type Retriever struct {
 func NewRetriever() (retriever.Retriever, error) {
 	// 1. 连接 milvus
 	ctx := context.Background()
-	cli, err := client.NewClient(ctx, client.Config{
+	cli, err := milvusClient.NewClient(ctx, milvusClient.Config{
 		Address:  viper.GetString("milvus.addr"),
 		Username: viper.GetString("milvus.username"),
 		Password: viper.GetString("milvus.password"),

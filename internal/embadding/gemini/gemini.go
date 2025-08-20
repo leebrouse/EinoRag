@@ -19,15 +19,19 @@ type GeminiEmbedder struct {
 // NewGeminiEmbedder 初始化 Gemini Embedder
 func NewEmbedder() (embedding.Embedder, error) {
 
-	ctx := context.Background()
-	client, err := genai.NewClient(ctx, nil) // 会自动读取环境变量 API KEY
-	if err != nil {
-		return nil, fmt.Errorf("failed to create client: %w", err)
-	}
-
+	apikey := viper.GetString("gemini.apikey")
 	embedder := viper.GetString("gemini.embedder")
 	if embedder == "" {
 		return nil, fmt.Errorf("gemini embedder not configured")
+	}
+
+	ctx := context.Background()
+	client, err := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:  apikey,
+		Backend: genai.BackendGeminiAPI,
+	}) 
+	if err != nil {
+		return nil, fmt.Errorf("failed to create client: %w", err)
 	}
 
 	return &GeminiEmbedder{
