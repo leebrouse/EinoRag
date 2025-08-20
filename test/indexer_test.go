@@ -11,6 +11,7 @@ import (
 	"github.com/cloudwego/eino/schema"                        // Document 定义
 	_ "github.com/leebrouse/eino/internal/config"
 	"github.com/leebrouse/eino/internal/embadding/gemini"
+	"github.com/leebrouse/eino/internal/rag/indexer"
 	"github.com/milvus-io/milvus-sdk-go/v2/client"
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 	"github.com/spf13/viper"
@@ -21,11 +22,10 @@ func TestIndexer_Store(t *testing.T) {
 	ctx := context.Background()
 
 	// 1. 创建 Milvus 客户端
-	addr := viper.GetString("milvus.addr")
 	cli, err := client.NewClient(ctx, client.Config{
-		Address:  addr,
-		Username: "minioadmin",
-		Password: "minioadmin",
+		Address:  viper.GetString("milvus.addr"),
+		Username: viper.GetString("milvus.username"),
+		Password: viper.GetString("milvus.password"),
 	})
 	require.NoError(t, err)
 	defer cli.Close()
@@ -47,7 +47,7 @@ func TestIndexer_Store(t *testing.T) {
 				Name:       "id",
 				DataType:   entity.FieldTypeVarChar,
 				PrimaryKey: true,
-				AutoID:     false,
+				AutoID:     true,
 				TypeParams: map[string]string{"max_length": "128"},
 			},
 			{
@@ -69,26 +69,54 @@ func TestIndexer_Store(t *testing.T) {
 	require.NoError(t, err)
 
 	// 删除collection
-	defer func() {
-		_ = cli.DropCollection(ctx, collection)
-	}()
+	// defer func() {
+	// 	_ = cli.DropCollection(ctx, collection)
+	// }()
 
 	// 4. 构造测试文档
 	docs := []*schema.Document{
 		{
-			ID:      "test-doc-1",
+			// ID:      "test-doc-1",
 			Content: "Milvus is an open-source vector database.",
 			MetaData: map[string]any{
 				"source": "test",
 			},
 		},
 		{
-			ID:      "test-doc-2",
+			// ID:      "test-doc-2",
 			Content: "Milvus supports distributed deployment.",
 		},
 	}
 
 	// 5. 写入并断言
+	ids, err := indexer.Store(ctx, docs)
+	require.NoError(t, err)
+	require.Len(t, ids, 2)
+	log.Printf("Stored docs, ids=%v", ids)
+}
+
+func TestIndexer_Store2(t *testing.T) {
+	indexer, err := indexer.NewIndexer()
+	if err != nil {
+		require.NoError(t, err)
+	}
+
+	ctx := context.Background()
+
+	docs := []*schema.Document{
+		{
+			//ID:      "test-doc-1",
+			Content: "Milvus is an open-source vector database.",
+			MetaData: map[string]any{
+				"source": "test",
+			},
+		},
+		{
+			//ID:      "test-doc-2",
+			Content: "Milvus supports distributed deployment.",
+		},
+	}
+
 	ids, err := indexer.Store(ctx, docs)
 	require.NoError(t, err)
 	require.Len(t, ids, 2)

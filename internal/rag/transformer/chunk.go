@@ -5,21 +5,18 @@ import (
 	"fmt"
 
 	"github.com/cloudwego/eino/components/document"
-	"github.com/cloudwego/eino/components/embedding"
 	"github.com/cloudwego/eino/schema"
-	milvus "github.com/milvus-io/milvus-sdk-go/v2/client"
 	"github.com/spf13/viper"
 )
 
 type Transformer struct {
-	client         *milvus.Client
-	embedder       embedding.Embedder
 	chunkSize      int
 	overlap        int
 	minChunkLength int
 }
 
 func NewTransformer() (document.Transformer, error) {
+
 	chunkSize := viper.GetInt("rag.transformer.chunk_size")
 	overlap := viper.GetInt("rag.transformer.overlap")
 	minChunkLength := viper.GetInt("rag.transformer.min_chunk_length")

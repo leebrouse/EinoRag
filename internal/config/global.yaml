@@ -8,6 +8,9 @@ rag:
   retriever:
     topk: 5
 
+  indexer:
+    metricType: "COSINE"
+
 # gemini global config
 gemini:
   apikey: "${GOOGLE_KEY}"
@@ -20,6 +23,7 @@ milvus:
   addr: "localhost:19530"
   username: "minioadmin"
   password: "minioadmin"
-  collection: "rag_docs"
+  # collection: "rag_docs"
+  collection: "test_rag_docs"
 
 
