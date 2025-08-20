@@ -62,7 +62,7 @@ func TestIndexer_Store(t *testing.T) {
 			{
 				Name:       "vector",
 				DataType:   entity.FieldTypeFloatVector,
-				TypeParams: map[string]string{"dim": "3072"},
+				TypeParams: map[string]string{"dim": "768"},
 			},
 		},
 	})

@@ -15,8 +15,9 @@ rag:
 gemini:
   apikey: "${GOOGLE_KEY}"
   model: "gemini-2.0-Flash"
-  embedder: "gemini-embedding-001"
-  dim: 3072
+  # embedder: "gemini-embedding-001"
+  embedder: "text-embedding-004"
+  dim: 1536 
 
 # milvus global config
 milvus:
