@@ -21,7 +21,7 @@ func TestRetriever_Real(t *testing.T) {
 
 	// 2. 执行查询
 	ctx := context.Background()
-	docs, err := r.Retrieve(ctx, "milvus")
+	docs, err := r.Retrieve(ctx, "Milvus")
 	if err != nil {
 		t.Fatalf("Retrieve failed: %v", err)
 	}

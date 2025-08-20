@@ -14,13 +14,14 @@ import (
 	"github.com/cloudwego/eino/components/document/parser"
 	"github.com/cloudwego/eino/schema"
 	"github.com/leebrouse/eino/internal/embadding/gemini" // 假设这是你的 gemini embedder 包
+	"github.com/leebrouse/eino/internal/rag/indexer"
 
 	"golang.org/x/time/rate"
 )
 
 func main() {
 	ctx := context.Background()
-
+	start := time.Now()
 	// --- 1. 解析 PDF ---
 	// 初始化 PDF 解析器
 	p, err := pdf.NewPDFParser(ctx, &pdf.Config{ToPages: true})
@@ -68,7 +69,7 @@ func main() {
 	// 配置参数
 	batchSize := 10  // 每批处理的文档数量。保持为 1 可以更精细地控制速率。
 	numWorkers := 10 // 并发 worker 的数量。可以适当增加，但速率由限速器控制。
-	maxRetries := 5 // 最大重试次数
+	maxRetries := 5  // 最大重试次数
 
 	// 创建任务和结果通道
 	tasks := make(chan []*schema.Document, len(docs)/batchSize+1)
@@ -134,7 +135,13 @@ func main() {
 		fmt.Println("示例 chunk 内容:", allChunks[0].Content)
 		fmt.Printf("第一个 chunk 的元数据: %+v\n", allChunks)
 	}
+
 	fmt.Printf("所有批次处理成功，总共生成了 %d 个 chunks。\n", len(allChunks))
+	fmt.Printf("Total elapsed time: %v\n", time.Since(start))
+	// indexer
+	indexer, _ := indexer.NewIndexer()
+	indexer.Store(ctx, allChunks)
+
 }
 
 // retryTransform 带有指数退避和智能重试逻辑的 Transform 函数

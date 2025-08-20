@@ -1,9 +1,9 @@
 # RAG system compentent config
 rag:
   transformer:
-    chunk_size: 500
-    overlap: 50
-    min_chunk_length: 100
+    bufferSize: 2
+    minChunkSize: 100
+    percentile: 0.9
 
   retriever:
     topk: 5
@@ -27,4 +27,8 @@ milvus:
   # collection: "rag_docs"
   collection: "test_rag_docs"
 
-
+# wokerPool global config
+workerPool:
+  tasks: 10
+  workers: 10
+  retry: 5
