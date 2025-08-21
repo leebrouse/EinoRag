@@ -45,28 +45,6 @@ func NewWorkerPool(splitter document.Transformer, limiter *rate.Limiter) *Worker
 	}
 }
 
-// worker is the core function executed by each goroutine
-func (wp *WorkerPool) worker(ctx context.Context, workerID int) {
-	defer wp.wg.Done()
-	fmt.Printf("Worker %d started\n", workerID)
-	for batch := range wp.tasks {
-		// Wait for the rate limiter before processing
-		if err := wp.limiter.Wait(ctx); err != nil {
-			fmt.Printf("Worker %d rate limiter wait failed: %v\n", workerID, err)
-			return
-		}
-
-		fmt.Printf("Worker %d processing a batch (%d documents)...\n", workerID, len(batch))
-		splitted, err := retryTransform(ctx, wp.splitter, batch, wp.maxRetries)
-		if err != nil {
-			fmt.Printf("Worker %d failed to process batch (max retries reached): %v\n", workerID, err)
-			continue // Continue with the next task
-		}
-		wp.results <- splitted
-	}
-	fmt.Printf("Worker %d finished\n", workerID)
-}
-
 // Run starts all workers in the WorkerPool
 func (wp *WorkerPool) Run(ctx context.Context) {
 	for i := 0; i < wp.workers; i++ {
@@ -102,6 +80,28 @@ func (wp *WorkerPool) AssembleChunks() []*schema.Document {
 	return allChunks
 }
 
+// worker is the core function executed by each goroutine
+func (wp *WorkerPool) worker(ctx context.Context, workerID int) {
+	defer wp.wg.Done()
+	fmt.Printf("Worker %d started\n", workerID)
+	for batch := range wp.tasks {
+		// Wait for the rate limiter before processing
+		if err := wp.limiter.Wait(ctx); err != nil {
+			fmt.Printf("Worker %d rate limiter wait failed: %v\n", workerID, err)
+			return
+		}
+
+		fmt.Printf("Worker %d processing a batch (%d documents)...\n", workerID, len(batch))
+		splitted, err := retryTransform(ctx, wp.splitter, batch, wp.maxRetries)
+		if err != nil {
+			fmt.Printf("Worker %d failed to process batch (max retries reached): %v\n", workerID, err)
+			continue // Continue with the next task
+		}
+		wp.results <- splitted
+	}
+	fmt.Printf("Worker %d finished\n", workerID)
+}
+
 // retryTransform is a transform function with exponential backoff and intelligent retries
 func retryTransform(ctx context.Context, splitter document.Transformer, batch []*schema.Document, maxRetries int) ([]*schema.Document, error) {
 	var result []*schema.Document
@@ -127,4 +127,3 @@ func retryTransform(ctx context.Context, splitter document.Transformer, batch []
 	}
 	return nil, fmt.Errorf("failed after %d retries: %w", maxRetries, err)
 }
-

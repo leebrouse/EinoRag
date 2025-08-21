@@ -14,7 +14,7 @@ import (
 	"github.com/cloudwego/eino/components/document/parser"
 	"github.com/cloudwego/eino/schema"
 	"github.com/leebrouse/eino/internal/embadding/gemini" // 假设这是你的 gemini embedder 包
-	"github.com/leebrouse/eino/internal/rag/indexer"
+	"github.com/leebrouse/eino/internal/rag/uploader/indexer"
 
 	"golang.org/x/time/rate"
 )

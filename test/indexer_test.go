@@ -11,7 +11,7 @@ import (
 	"github.com/cloudwego/eino/schema"                        // Document 定义
 	_ "github.com/leebrouse/eino/internal/config"
 	"github.com/leebrouse/eino/internal/embadding/gemini"
-	"github.com/leebrouse/eino/internal/rag/indexer"
+	"github.com/leebrouse/eino/internal/rag/uploader/indexer"
 	"github.com/milvus-io/milvus-sdk-go/v2/client"
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 	"github.com/spf13/viper"

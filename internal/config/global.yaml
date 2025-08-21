@@ -10,12 +10,12 @@ rag:
 
   indexer:
     metricType: "COSINE"
+  
 
 # gemini global config
 gemini:
   apikey: "${GOOGLE_KEY}"
-  model: "gemini-2.0-Flash"
-  # embedder: "gemini-embedding-001"
+  model: "gemini-1.5-flash"  # embedder: "gemini-embedding-001"
   embedder: "text-embedding-004"
   dim: 1536 
 
@@ -26,6 +26,10 @@ milvus:
   password: "minioadmin"
   # collection: "rag_docs"
   collection: "test_rag_docs"
+
+loader:
+  toPages: true
+
 
 # wokerPool global config
 workerPool:

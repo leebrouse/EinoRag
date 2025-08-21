@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	myretriever "github.com/leebrouse/eino/internal/rag/retriever"
+	myretriever "github.com/leebrouse/eino/internal/rag/generator/retriever"
 )
 
 func main() {
@@ -26,6 +26,6 @@ func main() {
 
 	// 4. 打印结果
 	for _, d := range docs {
-		fmt.Printf("\ncontent=%q\n",d.Content)
+		fmt.Printf("\ncontent=%q\n", d.Content)
 	}
 }

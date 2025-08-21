@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	_ "github.com/leebrouse/eino/internal/config" // 仅用于加载全局配置
-	retriever "github.com/leebrouse/eino/internal/rag/retriever"
+	retriever "github.com/leebrouse/eino/internal/rag/generator/retriever"
 )
 
 // TestRetriever_Real 针对 Retriever 进行端到端集成测试：
