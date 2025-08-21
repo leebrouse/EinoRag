@@ -1,46 +1,88 @@
-## Eino
+````markdown
+````
+# EinoRag
+EinoRag 是一个基于 ByteDance Eino 框架之上的 RAG（Retrieval-Augmented Generation）API SDK，旨在帮助开发者更轻松地集成检索式生成能力。它使用了 Google Gemini 的 Embedding 接口，由 `viper` 负责配置加载与管理。  
 
-一个最小可用的示例，演示如何使用 Gemini 的 Embedding 能力并通过 `viper` 加载配置。
+---
 
-### 运行环境
-- **Go**: 1.22+（建议）
-- **依赖**:
-  - `google.golang.org/genai`
-  - `github.com/cloudwego/eino`
-  - `github.com/spf13/viper`
+## Table of Contents
 
-### 配置
-本项目使用 `viper` 在初始化时读取 `internal/config/global.yaml`，同时会自动读取环境变量（用于 API Key）。
+- [特性](#特性)  
+- [快速开始](#快速开始)  
+- [配置说明](#配置说明)  
+- [常见问题](#常见问题)   
 
-1) 在 `internal/config/global.yaml` 中添加 embedding 模型配置：
-```yaml
-gemini:
-  embedder: gemini-embedding-001
-```
+---
 
-2) 设置 Google Gemini 的 API Key（`genai.NewClient` 会自动读取环境变量）：
-```bash
-export GOOGLE_API_KEY="<你的_API_KEY>"
-```
-> 若你使用的是其他兼容变量名，请参考 `google.golang.org/genai` 的文档；通常 `GOOGLE_API_KEY` 即可。
+## 特性
 
-### 运行集成测试（Embedding）
-该测试会真实调用 Gemini Embedding 接口，请确保已完成上述“配置”。
+- 基于 Go 1.22+ 构建，推荐使用最新版本  
+- 使用 `viper` 加载 YAML 配置及环境变量  
+- 支持 Gemini Embedding 接口的封装与调用  
+- 包含集成测试示例，便于验证配置与调用流程 
 
-```bash
-# 仅运行该用例，输出更详细日志
-go test ./test -run TestGeminiEmbedder_Real -v
-```
+---
+````
+## 快速开始
 
-测试文件：`test/embedder_test.go`
-- 读取 `internal/config/global.yaml` 的 `gemini.embedder` 作为嵌入模型（例如 `text-embedding-004`）
-- 使用 `GOOGLE_API_KEY` 作为鉴权
+1. **克隆项目**
 
-### 目录结构（节选）
-- `internal/config/viper.go`: `viper` 初始化与配置加载
-- `internal/embadding/gemini/gemini.go`: Gemini Embedding 的封装
-- `test/embedder_test.go`: 集成测试示例
+   ```bash
+   git clone https://github.com/leebrouse/EinoRag.git
+   cd EinoRag
+   go run main.go  #这个是一个 测试例子
+````
+2. **准备环境**
 
-### 常见问题
-- 如果 `viper` 无法从环境变量解析到 `gemini.embedder`，请优先在 `internal/config/global.yaml` 中配置；当前实现主要面向文件配置。
-- 若测试报鉴权错误，检查 `GOOGLE_API_KEY` 是否已正确导出到当前 shell。
+   * 安装 Go（版本 ≥ 1.22）
+
+   * 设置 Gemini API Key：
+
+     ```bash
+     export GOOGLE_API_KEY="<你的_API_KEY>"
+     ```
+
+   * 编辑 `internal/config/global.yaml`，添加 embedding 模型：
+
+     ```yaml
+     gemini:
+       embedder: gemini-embedding-001
+     ```
+
+3. **运行集成测试**
+
+   ```bash
+   go test ./test -run TestGeminiEmbedder_Real -v
+   ```
+
+   该测试会调用 Gemini 的实际嵌入接口，用于验证整个调用流程是否正确 ([GitHub][1])。
+
+---
+## 配置说明
+
+* **`internal/config/global.yaml`**
+  用于定义 embedding 模型字段，例如：
+
+  ```yaml
+  gemini:
+    embedder: gemini-embedding-001
+  ```
+
+* **环境变量**
+  SDK 支持通过环境变量读取 API Key（默认变量名为 `GOOGLE_API_KEY`）。如果你使用其他名称，可以参考 `google.golang.org/genai` 的文档进行配置 ([GitHub][1])。
+
+---
+* `viper.go`：负责全局配置与环境变量读取
+* `gemini.go`：封装对 Gemini Embedding API 的调用
+* `embedder_test.go`：提供如何调用与测试嵌入的参考代码 ([GitHub][1])
+
+---
+
+## 常见问题
+
+* **配置问题**：若 `viper` 无法正确读取到环境变量中的 `gemini.embedder`，请优先在 `global.yaml` 中显式配置。当前实现对文件配置优先级较高 ([GitHub][1])。
+
+* **鉴权错误**：若集成测试报告鉴权失败，请检查 `GOOGLE_API_KEY` 是否已成功导出，且具备访问 Gemini 的权限 ([GitHub][1])。
+
+---
+[1]: https://github.com/leebrouse/EinoRag "GitHub - leebrouse/EinoRag: EinoRag is a RAG API SDK built on top of the ByteDance Eino framework."
