@@ -10,7 +10,7 @@ type RAG interface {
 	Query(ctx context.Context, prompt string) (string, error)
 	// Upload file such as "pdf,markdown,txt....." and embed them to vector [][]float64
 	// Step: 1. upload file (loader)
-	// 		 2. extract it (transformer)
+	// 		 2. extract and chunk it (transformer)
 	//  	 3. embedding the file and insert to the vector database (indexer)
 	Upload(ctx context.Context, fileUrl string) ([]string, error)
 }
