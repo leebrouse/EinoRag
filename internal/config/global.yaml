@@ -1,0 +1,38 @@
+# RAG system compentent config
+rag:
+  transformer:
+    bufferSize: 2
+    minChunkSize: 100
+    percentile: 0.9
+
+  retriever:
+    topk: 5
+
+  indexer:
+    metricType: "COSINE"
+  
+
+# gemini global config
+gemini:
+  apikey: "${GOOGLE_KEY}"
+  model: "gemini-1.5-flash"  # embedder: "gemini-embedding-001"
+  embedder: "text-embedding-004"
+  dim: 1536 
+
+# milvus global config
+milvus:
+  addr: "localhost:19530"
+  username: "minioadmin"
+  password: "minioadmin"
+  # collection: "rag_docs"
+  collection: "test_rag_docs"
+
+loader:
+  toPages: true
+
+
+# wokerPool global config
+workerPool:
+  tasks: 10
+  workers: 10
+  retry: 5
