@@ -8,6 +8,8 @@ require (
 	github.com/cloudwego/eino-ext/components/indexer/milvus v0.0.0-20250818061135-8213e7d8b750
 	github.com/milvus-io/milvus-sdk-go/v2 v2.4.2
 	github.com/stretchr/testify v1.10.0
+	gobot.io/x/gobot v1.16.0
+	gocv.io/x/gocv v0.42.0
 	golang.org/x/net v0.41.0
 	google.golang.org/genai v1.20.0
 )
@@ -20,7 +22,10 @@ require (
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
+	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
@@ -43,7 +48,6 @@ require (
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
 	github.com/bytedance/sonic v1.13.2 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
-	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/cloudwego/eino-ext/components/document/parser/pdf v0.0.0-20250819065230-0fb5ad04c85f
 	github.com/cockroachdb/errors v1.9.1 // indirect
